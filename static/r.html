@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Report a game</title>
+<style>
+:root{--background:#ffffff;--foreground:#111111;--link:#0969da;}
+@media (prefers-color-scheme: dark){:root{--background:#0d1117;--foreground:#e6edf3;--link:#4493f8;}}
+body{background-color:var(--background);color:var(--foreground);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5;margin:0 auto;max-width:40rem;padding:0 16px;}
+a{color:var(--link);}
+</style>
+</head>
+<body>
+<p>Opening the report form…</p>
+<p><a id="form-link" href="https://github.com/RiftWii/compatibility/issues/new?template=report.yml">Open the form</a></p>
+<script>
+(function () {
+  var base = "https://github.com/RiftWii/compatibility/issues/new";
+  var link = document.getElementById("form-link");
+  var raw = (window.location.hash || "").slice(1);
+  var parts = raw.split(".");
+  var id = (parts[0] || "").toUpperCase();
+  var gameId = /^(?:[A-Z0-9]{4}|[A-Z0-9]{6})$/.test(id) ? id : null;
+  var types = { w: "Wii", g: "GameCube", c: "Channel / WiiWare / VC" };
+  var t = parts[1] || "";
+  var platform = Object.prototype.hasOwnProperty.call(types, t) ? types[t] : null;
+  var v = parts[2] || "";
+  var version = (parts.length === 3 && /^\d{4}(-\d+)?$/.test(v)) ? v : null;
+  function finish(name) {
+    var params = new URLSearchParams();
+    params.set("template", "report.yml");
+    if (gameId) {
+      params.set("game_id", gameId);
+    }
+    if (platform) {
+      params.set("platform", platform);
+    }
+    if (version) {
+      params.set("version", version);
+    }
+    if (name) {
+      params.set("game_name", name);
+    }
+    var titleValue = name || gameId;
+    if (titleValue) {
+      params.set("title", "[Report] " + titleValue);
+    }
+    var url = base + "?" + params.toString();
+    link.setAttribute("href", url);
+    window.location.replace(url);
+  }
+  if (!gameId) {
+    finish(null);
+    return;
+  }
+  var controller = new AbortController();
+  var timer = window.setTimeout(function () {
+    controller.abort();
+  }, 2000);
+  window.fetch("data.json", { signal: controller.signal }).then(function (res) {
+    if (!res.ok) {
+      throw new Error("fetch failed");
+    }
+    return res.json();
+  }).then(function (data) {
+    var name = null;
+    if (Array.isArray(data)) {
+      for (var i = 0; i < data.length; i++) {
+        var entry = data[i];
+        if (entry && entry.game_id === gameId && typeof entry.game_name === "string" && entry.game_name) {
+          name = entry.game_name;
+          break;
+        }
+      }
+    }
+    finish(name);
+  }).catch(function () {
+    finish(null);
+  }).finally(function () {
+    window.clearTimeout(timer);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,4 +1,5 @@
 import json
+import shutil
 import os
 import re
 import urllib.request
@@ -344,6 +345,9 @@ def main():
     # this repo publishes only the data, plus a page that sends visitors there.
     with open("site/index.html", "w", encoding="utf-8") as f:
         f.write(REDIRECT_PAGE)
+    # RiftWii's "Report how it runs" code links to r#<ID>.<type>.<version>,
+    # short enough for its QR codes; r.html opens the form with those filled in.
+    shutil.copy("static/r.html", "site/r.html")
     print(f"Built list: {len(games)} games, {console_total} console reports, {dolphin_total} Dolphin reports, {skipped} skipped")
 
 
