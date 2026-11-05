@@ -1,0 +1,27 @@
+name: Label report
+on:
+  issues:
+    types: [opened, edited, labeled]
+# Opening a report fires both opened and labeled; one run per issue at a time.
+concurrency:
+  group: label-${{ github.event.issue.number }}
+  cancel-in-progress: false
+jobs:
+  label:
+    if: contains(github.event.issue.labels.*.name, 'report')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Label report
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: python scripts/label_report.py

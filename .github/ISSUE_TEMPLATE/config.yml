@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: The compatibility list
+    url: https://riftwii.github.io/compatibility.html
+    about: View the RiftWii game compatibility list.

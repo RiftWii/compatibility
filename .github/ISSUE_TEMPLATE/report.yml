@@ -1,0 +1,145 @@
+name: Game report
+description: Report how a game runs in RiftWii.
+title: "[Report] "
+labels: ["report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please file one report per game and setup.
+
+        Search the compatibility list first to see if your setup is already covered.
+
+        Do not post personal info such as console IDs, friend codes or network names.
+  - type: input
+    id: game_id
+    attributes:
+      label: Game ID
+      description: The 6 letters and numbers shown on the game's page in RiftWii (e.g. RMGE01; channels have 4, e.g. HAAA).
+      placeholder: RMGE01
+    validations:
+      required: true
+  - type: input
+    id: game_name
+    attributes:
+      label: Game name
+      description: The name of the game as shown in RiftWii.
+      placeholder: Mario Kart Wii
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Game type
+      options:
+        - Wii
+        - GameCube
+        - Channel / WiiWare / VC
+    validations:
+      required: true
+  - type: dropdown
+    id: status
+    attributes:
+      label: How it runs
+      description: "Perfect: no problems found. Playable: small problems, can be finished. Has problems: big problems, crashes or can't be finished. Won't start: never gets in-game."
+      options:
+        - Perfect
+        - Playable
+        - Has problems
+        - Won't start
+    validations:
+      required: true
+  - type: dropdown
+    id: source
+    attributes:
+      label: Loaded from
+      options:
+        - Disc
+        - SD card
+        - USB drive
+        - NAND (channel)
+    validations:
+      required: true
+  - type: dropdown
+    id: file_type
+    attributes:
+      label: File type
+      description: CISO is not supported; convert to ISO or RVZ in Dolphin.
+      options:
+        - Disc (no file)
+        - ISO
+        - RVZ
+        - WBFS
+        - Channel (installed)
+    validations:
+      required: true
+  - type: dropdown
+    id: console
+    attributes:
+      label: Console
+      options:
+        - Wii
+        - Wii mini
+        - Wii U (vWii)
+        - Dolphin (emulator)
+    validations:
+      required: true
+  - type: input
+    id: cios
+    attributes:
+      label: cIOS
+      description: The d2x cIOS your games use, for example d2x v11 in slot 249. Leave it empty if unsure.
+      placeholder: d2x v11 base 57 in slot 249
+    validations:
+      required: false
+  - type: dropdown
+    id: controller
+    attributes:
+      label: Controller
+      multiple: true
+      options:
+        - Wii Remote
+        - Wii Remote + Nunchuk
+        - Classic Controller
+        - GameCube controller
+        - GameCube controller (Wii U adapter)
+        - USB pad
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: usb_pad
+    attributes:
+      label: USB pad model
+      description: Only if a USB pad was used.
+    validations:
+      required: false
+  - type: input
+    id: mods
+    attributes:
+      label: Mods
+      placeholder: None, or the Riivolution pack / cheats used
+    validations:
+      required: false
+  - type: input
+    id: version
+    attributes:
+      label: RiftWii version
+      description: Shown at the top of every Settings page in RiftWii.
+      placeholder: 2611-42
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: What went wrong or right, and where in the game.
+    validations:
+      required: false
+  - type: input
+    id: problem_report
+    attributes:
+      label: Problem report link
+      description: From Settings > Help > Send a problem report.
+    validations:
+      required: false
