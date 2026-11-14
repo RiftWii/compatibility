@@ -28,10 +28,11 @@ No GitHub account? A Discord route for sending reports is coming.
 
 ## What happens next
 
-The list updates by itself within a few minutes of your report. Bad reports (spam, wrong game) are closed by a maintainer and drop out of the count. Results tested in Dolphin are kept apart from real consoles, so console results always come first.
+The list updates by itself within a few minutes of your report. Reports that a maintainer has checked are closed and stay on the list. Bad reports (spam, wrong game, duplicates) are closed as not planned and drop out of the count. Results tested in Dolphin are kept apart from real consoles, so console results always come first.
 
 ## For maintainers
 
-- Closing a report removes it from the list. Only open issues with the `report` label are counted.
+- Issues with the `report` label are counted when they are open, or closed as **Completed**. Close a checked report as Completed to keep it on the list but out of the open issues.
+- Close a report as **Not planned** (or as a duplicate) to take it off the list.
 - `data/dolphin.json` holds extra Dolphin results. It is a list of objects with `game_id`, `game_name`, `platform`, `status`, `version`, `notes` (optional) and `tested` (date string).
 - Run the checks with `python -m unittest discover -s tests`. The build needs only the Python standard library, no npm and no build step.
