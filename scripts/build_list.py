@@ -231,6 +231,20 @@ def aggregate(reports: list[dict]) -> list[dict]:
     return out
 
 
+def counts_on_list(item: dict) -> bool:
+    """Whether an issue from the API belongs on the list.
+
+    Open reports count. A report closed as completed also counts: it has been
+    looked at and is kept on the list, but out of the open issues. A report
+    closed for any other reason (not planned, duplicate) is taken off.
+    """
+    if "pull_request" in item:
+        return False
+    if item.get("state") == "open":
+        return True
+    return item.get("state") == "closed" and item.get("state_reason") == "completed"
+
+
 def main():
     token = os.environ.get("GITHUB_TOKEN", "")
     repo = os.environ.get("GITHUB_REPOSITORY", "")
@@ -242,7 +256,7 @@ def main():
         headers["Authorization"] = "Bearer " + token
     issues: list[dict] = []
     if repo:
-        url = f"https://api.github.com/repos/{repo}/issues?label=report&state=open&per_page=100"
+        url = f"https://api.github.com/repos/{repo}/issues?labels=report&state=all&per_page=100"
         while url:
             req = urllib.request.Request(url, headers=headers)
             try:
@@ -252,9 +266,8 @@ def main():
             except urllib.error.HTTPError as e:
                 raise SystemExit(f"GitHub API request failed: {e.code} {e.reason}")
             for item in data:
-                if "pull_request" in item:
-                    continue
-                issues.append(item)
+                if counts_on_list(item):
+                    issues.append(item)
             nxt = None
             if link:
                 for part in link.split(","):

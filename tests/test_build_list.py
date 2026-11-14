@@ -4,7 +4,7 @@ import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 
-from build_list import aggregate, parse_issue_body, version_key
+from build_list import aggregate, counts_on_list, parse_issue_body, version_key
 
 
 SAMPLE_BODY = """### Game ID
@@ -163,3 +163,23 @@ class NotesHeadingTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestCountsOnList(unittest.TestCase):
+    def test_open_counts(self):
+        self.assertTrue(counts_on_list({"state": "open", "state_reason": None}))
+
+    def test_closed_completed_counts(self):
+        self.assertTrue(counts_on_list({"state": "closed", "state_reason": "completed"}))
+
+    def test_closed_not_planned_is_removed(self):
+        self.assertFalse(counts_on_list({"state": "closed", "state_reason": "not_planned"}))
+
+    def test_closed_duplicate_is_removed(self):
+        self.assertFalse(counts_on_list({"state": "closed", "state_reason": "duplicate"}))
+
+    def test_closed_without_reason_is_removed(self):
+        self.assertFalse(counts_on_list({"state": "closed", "state_reason": None}))
+
+    def test_pull_request_is_ignored(self):
+        self.assertFalse(counts_on_list({"state": "open", "pull_request": {}}))
